@@ -12,6 +12,7 @@ import {stdin as input, stdout as output} from 'node:process';
 import {join, resolve} from 'node:path';
 
 import {tarballAssetName} from './asset-name.js';
+import {PERMISSION_ARGS, claudeLaunchArgs} from './claude-launch.js';
 
 const TEMPLATE_REPO = 'gaia-react/gaia';
 const FALLBACK_VERSION = 'v2.0.0';
@@ -72,7 +73,7 @@ async function run(args) {
 
   if (!args.noClaude && claudeAvailable()) {
     console.log(`\n✓ ${projectName} ready (GAIA ${version}). Starting setup…\n`);
-    spawnSync('claude', ['--dangerously-skip-permissions', '/gaia-init'], {
+    spawnSync('claude', claudeLaunchArgs(), {
       cwd: targetDir,
       stdio: 'inherit',
     });
@@ -116,7 +117,9 @@ Options:
   -h, --help           Show this help.
 
 After scaffolding, Claude Code launches automatically and runs /gaia-init to
-complete setup. Pass --no-claude to skip this and follow the printed steps.`);
+complete setup in auto mode, which still blocks risky actions and falls back to
+asking when auto mode is unavailable. Pass --no-claude to skip this and follow
+the printed steps.`);
 }
 
 async function assertTargetWritable(targetDir) {
@@ -240,7 +243,7 @@ function printWelcome(projectName, version, skippedInstall) {
   console.log('Next steps:\n');
   console.log(`  cd ${projectName}`);
   if (skippedInstall) console.log('  pnpm install');
-  console.log('  claude --dangerously-skip-permissions\n');
+  console.log(`  claude ${PERMISSION_ARGS.join(' ')}\n`);
   console.log('Then in Claude Code, run:\n');
   console.log('  /gaia-init\n');
 }
