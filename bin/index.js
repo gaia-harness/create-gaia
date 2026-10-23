@@ -15,7 +15,7 @@ import {tarballAssetName} from './asset-name.js';
 import {PERMISSION_ARGS, claudeLaunchArgs} from './claude-launch.js';
 
 const TEMPLATE_REPO = 'gaia-react/gaia';
-const FALLBACK_VERSION = 'v2.0.0';
+const FALLBACK_VERSION = 'v2.0.1';
 
 const args = parseArgs(process.argv.slice(2));
 if (args.help) {
