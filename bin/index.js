@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// create-gaia — scaffold a new GAIA React project.
+// create-gaia: scaffold a new GAIA React project.
 //
 // Usage: npx create-gaia <project-name> [--version vX.Y.Z] [--no-install] [--no-git] [--no-claude]
 
@@ -11,8 +11,11 @@ import {createInterface} from 'node:readline/promises';
 import {stdin as input, stdout as output} from 'node:process';
 import {join, resolve} from 'node:path';
 
+import {tarballAssetName} from './asset-name.js';
+import {PERMISSION_ARGS, claudeLaunchArgs} from './claude-launch.js';
+
 const TEMPLATE_REPO = 'gaia-react/gaia';
-const FALLBACK_VERSION = 'v1.6.1';
+const FALLBACK_VERSION = 'v2.0.0';
 
 const args = parseArgs(process.argv.slice(2));
 if (args.help) {
@@ -36,7 +39,7 @@ async function run(args) {
   await assertTargetWritable(targetDir);
 
   const version = args.version ?? (await resolveLatestVersion());
-  const tarballUrl = `https://github.com/${TEMPLATE_REPO}/releases/download/${version}/gaia-${version}.tar.gz`;
+  const tarballUrl = `https://github.com/${TEMPLATE_REPO}/releases/download/${version}/${tarballAssetName(version)}`;
 
   console.log(`\nCreating ${projectName} from GAIA ${version}...`);
 
@@ -70,7 +73,7 @@ async function run(args) {
 
   if (!args.noClaude && claudeAvailable()) {
     console.log(`\n✓ ${projectName} ready (GAIA ${version}). Starting setup…\n`);
-    spawnSync('claude', ['--dangerously-skip-permissions', '/gaia-init'], {
+    spawnSync('claude', claudeLaunchArgs(), {
       cwd: targetDir,
       stdio: 'inherit',
     });
@@ -101,7 +104,7 @@ function normalizeVersion(v) {
 }
 
 function printHelp() {
-  console.log(`create-gaia — scaffold a new GAIA React project
+  console.log(`create-gaia: scaffold a new GAIA React project
 
 Usage:
   npx create-gaia <project-name> [options]
@@ -114,7 +117,9 @@ Options:
   -h, --help           Show this help.
 
 After scaffolding, Claude Code launches automatically and runs /gaia-init to
-complete setup. Pass --no-claude to skip this and follow the printed steps.`);
+complete setup in auto mode, which still blocks risky actions and falls back to
+asking when auto mode is unavailable. Pass --no-claude to skip this and follow
+the printed steps.`);
 }
 
 async function assertTargetWritable(targetDir) {
@@ -203,7 +208,7 @@ function ensurePnpm() {
     execSync('pnpm --version', {stdio: 'ignore'});
     return;
   } catch {
-    /* not installed — bootstrap it */
+    /* not installed, bootstrap it */
   }
   console.log('  ↳ pnpm not found, bootstrapping via corepack…');
   try {
@@ -238,7 +243,7 @@ function printWelcome(projectName, version, skippedInstall) {
   console.log('Next steps:\n');
   console.log(`  cd ${projectName}`);
   if (skippedInstall) console.log('  pnpm install');
-  console.log('  claude --dangerously-skip-permissions\n');
+  console.log(`  claude ${PERMISSION_ARGS.join(' ')}\n`);
   console.log('Then in Claude Code, run:\n');
   console.log('  /gaia-init\n');
 }
