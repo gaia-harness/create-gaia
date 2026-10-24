@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// create-gaia: scaffold a new GAIA React project.
+// create-gaia: scaffold a new GAIA project.
 //
 // Usage: npx create-gaia <project-name> [--version vX.Y.Z] [--no-install] [--no-git] [--no-claude]
 
@@ -15,7 +15,7 @@ import {tarballAssetName} from './asset-name.js';
 import {PERMISSION_ARGS, claudeLaunchArgs} from './claude-launch.js';
 
 const TEMPLATE_REPO = 'gaia-react/gaia';
-const FALLBACK_VERSION = 'v2.0.1';
+const FALLBACK_VERSION = 'v2.1.0';
 
 const args = parseArgs(process.argv.slice(2));
 if (args.help) {
@@ -104,7 +104,7 @@ function normalizeVersion(v) {
 }
 
 function printHelp() {
-  console.log(`create-gaia: scaffold a new GAIA React project
+  console.log(`create-gaia: scaffold a new GAIA project
 
 Usage:
   npx create-gaia <project-name> [options]

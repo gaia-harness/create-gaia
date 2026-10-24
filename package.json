@@ -1,7 +1,7 @@
 {
   "name": "create-gaia",
-  "version": "2.0.1",
-  "description": "Scaffold a new GAIA project: the Claude-native foundation for React apps, built on React Router with TypeScript, Tailwind, Vitest, Playwright, and Storybook.",
+  "version": "2.1.0",
+  "description": "Scaffolds GAIA, a serious harness for Claude Code: a monorepo with a React frontend, TypeScript, Tailwind, Vitest, Playwright, and Storybook.",
   "keywords": [
     "gaia",
     "react",
