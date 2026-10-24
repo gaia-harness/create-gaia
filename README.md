@@ -1,6 +1,6 @@
 # create-gaia
 
-Scaffold a new project from [GAIA React](https://github.com/gaia-react/gaia).
+Scaffold a new project from [GAIA](https://github.com/gaia-react/gaia).
 
 ## Usage
 
