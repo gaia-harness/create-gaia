@@ -1,6 +1,6 @@
 {
   "name": "create-gaia",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Scaffolds GAIA, a serious harness for Claude Code: a monorepo with a React frontend, TypeScript, Tailwind, Vitest, Playwright, and Storybook.",
   "keywords": [
     "gaia",
