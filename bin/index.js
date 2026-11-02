@@ -13,6 +13,7 @@ import {join, resolve} from 'node:path';
 
 import {tarballAssetName} from './asset-name.js';
 import {PERMISSION_ARGS, claudeLaunchArgs} from './claude-launch.js';
+import {ensurePnpm} from './pnpm-bootstrap.js';
 
 const TEMPLATE_REPO = 'gaia-harness/gaia';
 const FALLBACK_VERSION = 'v2.3.1';
@@ -37,6 +38,9 @@ async function run(args) {
 
   const targetDir = resolve(process.cwd(), projectName);
   await assertTargetWritable(targetDir);
+  // Before anything is written, so a pnpm failure leaves nothing to clean up
+  // and re-running works.
+  if (!args.noInstall) ensurePnpm();
 
   const version = args.version ?? (await resolveLatestVersion());
   const tarballUrl = `https://github.com/${TEMPLATE_REPO}/releases/download/${version}/${tarballAssetName(version)}`;
@@ -66,7 +70,6 @@ async function run(args) {
   }
 
   if (!args.noInstall) {
-    ensurePnpm();
     console.log('  ↳ pnpm install (this takes a minute)');
     run_(targetDir, 'pnpm', ['install']);
   }
@@ -200,21 +203,6 @@ function run_(cwd, cmd, argv) {
   const result = spawnSync(cmd, argv, {cwd, stdio: 'inherit'});
   if (result.status !== 0) {
     throw new Error(`${cmd} ${argv.join(' ')} exited with ${result.status ?? 'signal ' + result.signal}`);
-  }
-}
-
-function ensurePnpm() {
-  try {
-    execSync('pnpm --version', {stdio: 'ignore'});
-    return;
-  } catch {
-    /* not installed, bootstrap it */
-  }
-  console.log('  ↳ pnpm not found, bootstrapping via corepack…');
-  try {
-    execSync('corepack enable pnpm', {stdio: 'inherit'});
-  } catch {
-    execSync('npm install -g pnpm', {stdio: 'inherit'});
   }
 }
 
