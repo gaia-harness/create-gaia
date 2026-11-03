@@ -13,6 +13,7 @@ import {join, resolve} from 'node:path';
 
 import {tarballAssetName} from './asset-name.js';
 import {PERMISSION_ARGS, claudeLaunchArgs} from './claude-launch.js';
+import {GIT_INIT_ARGUMENTS} from './git-init.js';
 import {ensurePnpm} from './pnpm-bootstrap.js';
 
 const TEMPLATE_REPO = 'gaia-harness/gaia';
@@ -64,7 +65,7 @@ async function run(args) {
   if (!args.noGit) {
     console.log('  ↳ git init');
     await rm(join(targetDir, '.git'), {recursive: true, force: true});
-    run_(targetDir, 'git', ['init', '--quiet']);
+    run_(targetDir, 'git', GIT_INIT_ARGUMENTS);
     run_(targetDir, 'git', ['add', '.']);
     run_(targetDir, 'git', ['commit', '--quiet', '-m', `chore: scaffold from GAIA ${version}`]);
   }
